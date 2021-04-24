@@ -19,7 +19,7 @@
 
 # Intro
 
-This repository contains the code to train and run bone marrow smears classification models used in  diagnosis of Acute Promyelocytic Leukemia from Bone Marrow Smears 
+This repository contains the code to train and run bone marrow smears classification models used in diagnosis of Acute myelogenous leukemia from bone marrow smears 
 
 # Prerequisites
 
@@ -58,7 +58,7 @@ If you want to use your own data, you'll need to match the file and csv structur
 Clone the repository together with it's submodules:
 
 ```
-git clone --recurse-submodules git@github.com:TimSchmittmann/Fast-and-Accurate-Diagnosis-of-APL-from-BMS.git
+git clone --recurse-submodules git@github.com:TimSchmittmann/DL_detection_of_AML_from_BMS.git
 ```
 
 Copy environment file to not put your hardware specific setup into version control:
@@ -80,7 +80,7 @@ Setup should take no longer than 60 minutes, otherwise you might need to configu
 
 # Single models
 
-Our framework can be used to train individual models on many different binary classification tasks like Auer rod classification on cell images and APL-Healthy classification on whole BMS images with fully automated hyperparameter optimization. These individual models can then be combined into ensemble models, to improve results even further. To build a strong baseline, it is advised to get familar with the single models first, before trying to construct an ensemble model.
+Our framework can be used to train individual models on many different binary classification tasks like blast classification on cell images and AML-Healthy classification on whole BMS images with fully automated hyperparameter optimization. These individual models can then be combined into ensemble models, to improve results even further. To build a strong baseline, it is advised to get familar with the single models first, before trying to construct an ensemble model.
 
 ## Hyperparameter optimizing training
 We use [automatically registered configuration plugins](https://github.com/TimSchmittmann/bone_marrow_smear_classification/tree/15a946a69e2ffd842358bc38419364a36eea8c72/bms_classification/config/auto_registered/) to configure the automatic training of DL models for individual tasks. You need to create new configs or adjust the existings ones accordingly depending on the task you want to run. For the demo, copy the common_configs.py.example and configure the TrackingConfig depending on your optuna and mlflow setup:
@@ -89,17 +89,17 @@ We use [automatically registered configuration plugins](https://github.com/TimSc
 cp bone_marrow_smear_classification/bms_classification/config/auto_registered/common_config.py.example bone_marrow_smear_classification/bms_classification/config/auto_registered/common_config.py 
 ```
 
-This should be enough to run automatically train the demo model on auer rod cells using the "DemoAuerRodCellClassification" configuration. Additionally the PYTHONHASHSEED should be set to 0, to improve caching:
+This should be enough to run automatically train the demo model on auer rod cells using the "DemoAmlHealthyWsiClassification" configuration. Additionally the PYTHONHASHSEED should be set to 0, to improve caching:
 
 ```
-PYTHONHASHSEED=0 DISABLE_GPU=False python bone_marrow_smear_classification/bms_classification/model_training/single_model_classification.py --config=DemoAuerRodCellClassification
+PYTHONHASHSEED=0 DISABLE_GPU=False python bone_marrow_smear_classification/bms_classification/model_training/single_model_classification.py --config=DemoAmlHealthyWsiClassification
 ```
 
 After initial augmentation and creation of bottleneck features, one run should take no longer than 10 minutes.
 
 ## Finetuning
 
-After enough runs, you should compare the individual runs on mlflow. It's not recommended to blindly take the best run, as validation loss may oscillate and we should generally prefer simpler models over more complex configurations. Next set the mlflow RUN_ID in the DemoAuerRodCellClassificationFinetuning configuration found in the auer_rod_cell_classification.py file. You may set `LOG_IMAGES` and `LOG_MODELS` to True for finetuning, if you want to create the metrics plots.
+After enough runs, you should compare the individual runs on mlflow. It's not recommended to blindly take the best run, as validation loss may oscillate and we should generally prefer simpler models over more complex configurations. Next set the mlflow RUN_ID in the DemoAmlHealthyWsiClassificationFinetuning configuration found in the aml_healthy_wsi_classification.py file. You may set `LOG_IMAGES` and `LOG_MODELS` to True for finetuning, if you want to create the metrics plots.
 
 # Ensemble models
 
@@ -109,7 +109,7 @@ Creating an ensemble model, requires information about the best hyperparameter c
 
 ## Setting the best runs
 
-Next the best mlflow runs need to be selected for each single model and set in the auto-registered configuration for the current ensemble. The demo shows the configuration for the APL-healthy classification ensemble and the APL-AML classification ensemble.
+Next the best mlflow runs need to be selected for each single model and set in the auto-registered configuration for the current ensemble. The demo shows the configuration for the AML-healthy classification ensemble.
 
 ## Pre generating the csv splits
 
@@ -126,7 +126,7 @@ For your own data, you should adjust the settings in this python file accordingl
 Finally the hyperparameter-optimizing training can be started by utilizing the auto-registered configurations just like with the single models:
 
 ```
-PYTHONHASHSEED=0 DISABLE_GPU=False python bone_marrow_smear_classification/bms_classification/model_training/ensemble_model_classification.py --config=DemoAplHealthyEnsembleClassification
+PYTHONHASHSEED=0 DISABLE_GPU=False python bone_marrow_smear_classification/bms_classification/model_training/ensemble_model_classification.py --config=DemoAmlHealthyEnsembleClassification
 ```
 
 ## Visualization
