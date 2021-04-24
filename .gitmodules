@@ -1,0 +1,3 @@
+[submodule "bone_marrow_smear_classification"]
+	path = bone_marrow_smear_classification
+	url = git@github.com:TimSchmittmann/bone_marrow_smear_classification.git
