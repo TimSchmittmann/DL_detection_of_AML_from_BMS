@@ -24,3 +24,4 @@ occlusion_data/
 venv/
 .vscode
 mlruns/
+environment.yml
